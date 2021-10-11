@@ -6,6 +6,7 @@ export class SignInUserDto {
 }
 export class SignUpUserDto {
 	//TODO: add validation
+	@IsEmail()
 	email: string
 	password: string
 	firstName: string
