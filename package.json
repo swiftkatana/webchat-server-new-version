@@ -4,7 +4,7 @@
 	"description": "",
 	"author": "",
 	"private": true,
-	"license": "UNLICENSED",
+	"license": "MIT License",
 	"scripts": {
 		"prebuild": "rimraf dist",
 		"build": "nest build",
@@ -34,6 +34,7 @@
 		"@nestjs/throttler": "^1.2.0",
 		"@nestjs/websockets": "^8.0.6",
 		"bcrypt": "^5.0.1",
+		"class-validator": "^0.13.1",
 		"cookie-parser": "^1.4.5",
 		"dotenv": "^10.0.0",
 		"helmet": "^4.6.0",

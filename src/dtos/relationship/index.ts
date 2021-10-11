@@ -11,6 +11,9 @@ export class RelationshipGetUserDTO {
 
 export class RelationshipCreateDTO {
 	status: relationship_status
-	type: relationship_Request_types
-	userId: string
+	userIds: string[]
+}
+export class RelationshipUpdateDTO {
+	status: relationship_status
+	data: any
 }

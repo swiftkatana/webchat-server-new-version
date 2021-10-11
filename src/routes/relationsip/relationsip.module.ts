@@ -6,11 +6,32 @@ import {
 	RelationshipDB,
 	RelationshipSchema,
 } from 'schemas/relationship/relationship'
+import {
+	FriendRelationshipDB,
+	FriendRelationshipSchema,
+} from 'schemas/relationship/friendRelationship'
+import {
+	GroupRelationshipDB,
+	GroupRelationshipSchema,
+} from 'schemas/relationship/groupRelationship'
 
 @Module({
 	imports: [
 		MongooseModule.forFeature([
-			{ name: RelationshipDB.name, schema: RelationshipSchema },
+			{
+				name: RelationshipDB.name,
+				schema: RelationshipSchema,
+				discriminators: [
+					{
+						name: FriendRelationshipDB.name,
+						schema: FriendRelationshipSchema,
+					},
+					{
+						name: GroupRelationshipDB.name,
+						schema: GroupRelationshipSchema,
+					},
+				],
+			},
 		]),
 	],
 	controllers: [RelationsipController],

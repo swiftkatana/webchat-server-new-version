@@ -4,21 +4,22 @@ import { ChatDB } from 'schemas/chats/chat'
 import { UserDB } from 'schemas/user/user.schema'
 import { relationship_types } from 'enums/relationship/relationship_types'
 import { relationship_status } from 'enums/relationship/relationship_status'
+import { FriendRelationshipDB } from './friendRelationship'
+import { GroupRelationshipDB } from './groupRelationship'
 
 export type RelationshipDocument = RelationshipDB & Document
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, discriminatorKey: 'kind' })
 export class RelationshipDB {
-	@Prop({ type: Types.ObjectId, ref: UserDB.name, required: true })
-	users: Types.ObjectId[]
+	@Prop({
+		type: String,
+		required: true,
+		enum: [FriendRelationshipDB.name, GroupRelationshipDB.name],
+	})
+	kind: string
 
 	@Prop({ type: Types.ObjectId, ref: ChatDB.name })
 	chatId: Types.ObjectId
-
-	@Prop({ default: relationship_types.FRIEND })
-	type: relationship_types
-
-	@Prop({ default: relationship_status.PENDING })
-	status: relationship_status
 }
+
 export const RelationshipSchema = SchemaFactory.createForClass(RelationshipDB)

@@ -3,6 +3,7 @@ export enum relationship_status {
 	ACEPET = 'ACEPET',
 	DECLINE = 'DECLINE',
 	BLOCK = 'BLOCK',
+	DELETE = 'DELETE',
 }
 export enum relationship_Request_types {
 	UPDATE = 'UPDATE',

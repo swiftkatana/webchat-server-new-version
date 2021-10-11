@@ -3,6 +3,7 @@ import {
 	Controller,
 	Get,
 	Post,
+	Put,
 	Query,
 	Req,
 	UseGuards,
@@ -10,9 +11,16 @@ import {
 import {
 	RelationshipCreateDTO,
 	RelationshipGetUserDTO,
+	RelationshipUpdateDTO,
 } from 'dtos/relationship'
-import { relationship_Request_types } from 'enums/relationship/relationship_status'
-import { relationship_req_types } from 'enums/relationship/relationship_types'
+import {
+	relationship_Request_types,
+	relationship_status,
+} from 'enums/relationship/relationship_status'
+import {
+	relationship_req_types,
+	relationship_types,
+} from 'enums/relationship/relationship_types'
 import { JwtAuthGuard } from 'guards/jwt-auth.guard'
 import { RelationshipDocument } from 'schemas/relationship/relationship'
 import { IGetUserAuthInfoRequest } from 'type/MyRequest'
@@ -38,26 +46,29 @@ export class RelationsipController {
 			return 'dsa'
 		}
 	}
+
+	@Put()
+	async updateRelationship(
+		@Req() req: IGetUserAuthInfoRequest,
+		@Body() body: RelationshipUpdateDTO
+	) {
+		const { status, data } = body
+		const sendUser = req.user
+		let relationship: RelationshipDocument
+		console.log(status, data)
+		return relationship
+	}
+
 	@Post()
 	async createRelationship(
 		@Req() req: IGetUserAuthInfoRequest,
 		@Body() body: RelationshipCreateDTO
 	) {
-		const { status, type, userId } = body
-		const sendUser = req.user
-		let relationship: RelationshipDocument
-		switch (type) {
-			case relationship_Request_types.CREATE:
-				relationship = await this.relationshipService.createRelationship({
-					status,
-					users: [sendUser._id, userId],
-				})
-				break
-			case relationship_Request_types.UPDATE:
-				break
-			default:
-				break
-		}
-		return relationship
+		const { userIds } = body
+		const res = await this.relationshipService.createRelationship({
+			type: relationship_types.FRIEND,
+			users: userIds,
+		})
+		return { data: res, status: 'success' }
 	}
 }
