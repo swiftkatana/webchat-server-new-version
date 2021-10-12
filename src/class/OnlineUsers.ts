@@ -8,10 +8,12 @@ class OnlineUsers {
 		this.usersOnline[email] = socket
 		socket.data = email
 		this.length += 1
+		console.log('login email', email)
 	}
 
 	public removeUser = (email: string) => {
 		this.length -= 1
+		console.log('logout', email)
 		delete this.usersOnline[email]
 	}
 }

@@ -47,6 +47,23 @@ export class UserService {
 
 		return newUser as IUser
 	}
+	async findManyByIds(ids: string[]): Promise<UserDocument[] | any> {
+		const user = await this.UserModule.find(
+			{ _id: { $in: ids } },
+			this.filterUserObject(true)
+		)
+		if (!user || user.length === 0)
+			throw new HttpException(
+				{
+					status: HttpStatus.BAD_REQUEST,
+					error: 'user not found',
+					field: 'user',
+				},
+				HttpStatus.BAD_REQUEST
+			)
+
+		return user
+	}
 	async findOneById(
 		_id: string,
 		getFilterUser: boolean
@@ -72,7 +89,6 @@ export class UserService {
 		email: string,
 		getFilterUser: boolean
 	): Promise<UserDocument & any> {
-		console.log(email)
 		const user = await this.UserModule.findOne(
 			{ 'securityInfo.email': email },
 			this.filterUserObject(getFilterUser)

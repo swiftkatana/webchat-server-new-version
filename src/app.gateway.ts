@@ -37,9 +37,8 @@ export class AppGateway
 
 	afterInit() {
 		setInterval(() => {
-			console.log(
-				`${new Date().toISOString()}Amount of Users Online`,
-				OnlineUsers.length
+			this.logger.log(
+				`${new Date().toISOString()}Amount of Users Online: ` + OnlineUsers.length
 			)
 		}, 60000)
 
@@ -48,10 +47,7 @@ export class AppGateway
 
 	handleDisconnect(client: Socket) {
 		client.data && OnlineUsers.removeUser(client.data)
-		this.logger.warn(`Client disconnected: ${client.data || ' none login'}`)
 	}
 
-	handleConnection(client: Socket) {
-		this.logger.warn(`Client connected: ${client.id}`)
-	}
+	handleConnection(client: Socket) {}
 }

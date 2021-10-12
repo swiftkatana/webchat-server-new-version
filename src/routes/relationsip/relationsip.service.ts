@@ -35,8 +35,8 @@ export class RelationsipService {
 	public async getRelationships(
 		userId: Types.ObjectId
 	): Promise<RelationshipDocument[]> {
-		const relationships = await this.RelationsipModule.find({
-			users: { $in: [userId] },
+		const relationships = await this.FriendRelationshipModule.find({
+			$or: [{ userId1: userId }, { userId2: userId }],
 		})
 
 		return relationships
@@ -62,13 +62,16 @@ export class RelationsipService {
 					error: ERROR_LIST.DUPLICATE,
 					field: ERROR_FIEDS.RELATIONSHIP_DUPLICATE,
 				})
-			else
-				return await new this.FriendRelationshipModule({
+			else {
+				const relationship = await new this.FriendRelationshipModule({
 					userId1: users[0],
 					userId2: users[1],
-				})
+				}).save()
+				return relationship
+			}
 		} else {
-			return await new this.GroupRelationsipModule({ users })
+			console.log('groupRelationshipDocument')
+			return await new this.GroupRelationsipModule({ users }).save()
 		}
 	}
 }

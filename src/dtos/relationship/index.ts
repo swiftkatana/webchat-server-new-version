@@ -1,4 +1,8 @@
-import { relationship_req_types } from 'enums/relationship/relationship_types'
+import { IsArray } from 'class-validator'
+import {
+	relationship_req_types,
+	relationship_types,
+} from 'enums/relationship/relationship_types'
 import {
 	relationship_status,
 	relationship_Request_types,
@@ -10,8 +14,9 @@ export class RelationshipGetUserDTO {
 }
 
 export class RelationshipCreateDTO {
-	status: relationship_status
-	userIds: string[]
+	type: relationship_types
+	@IsArray()
+	usersIds: string[]
 }
 export class RelationshipUpdateDTO {
 	status: relationship_status

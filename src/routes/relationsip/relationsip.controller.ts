@@ -2,8 +2,8 @@ import {
 	Body,
 	Controller,
 	Get,
+	Patch,
 	Post,
-	Put,
 	Query,
 	Req,
 	UseGuards,
@@ -47,7 +47,7 @@ export class RelationsipController {
 		}
 	}
 
-	@Put()
+	@Patch()
 	async updateRelationship(
 		@Req() req: IGetUserAuthInfoRequest,
 		@Body() body: RelationshipUpdateDTO
@@ -64,10 +64,10 @@ export class RelationsipController {
 		@Req() req: IGetUserAuthInfoRequest,
 		@Body() body: RelationshipCreateDTO
 	) {
-		const { userIds } = body
+		const { usersIds, type } = body
 		const res = await this.relationshipService.createRelationship({
-			type: relationship_types.FRIEND,
-			users: userIds,
+			type: type,
+			users: usersIds,
 		})
 		return { data: res, status: 'success' }
 	}

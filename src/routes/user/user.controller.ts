@@ -1,5 +1,13 @@
-import { Controller, Get, Query, Req, UseGuards } from '@nestjs/common'
-import { SerachUserDto } from 'dtos/user'
+import {
+	Body,
+	Controller,
+	Get,
+	Post,
+	Query,
+	Req,
+	UseGuards,
+} from '@nestjs/common'
+import { GetUserProfileDto, SerachUserDto } from 'dtos/user'
 import { JwtAuthGuard } from 'guards/jwt-auth.guard'
 import { IGetUserAuthInfoRequest } from 'type/MyRequest'
 
@@ -16,6 +24,16 @@ export class UserController {
 			status: 'success',
 		}
 	}
+
+	@Post('/getProfilesData')
+	async getProfileData(
+		@Req() req: IGetUserAuthInfoRequest,
+		@Body() body: GetUserProfileDto
+	) {
+		const data = await this.userService.findManyByIds(body.usersIds)
+		return { data, status: 'success' }
+	}
+
 	@Get('/search')
 	async getSearchUsers(
 		@Query() query: SerachUserDto,

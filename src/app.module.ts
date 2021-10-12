@@ -21,6 +21,7 @@ import { ChatModule } from './routes/chat/chat.module'
 			{
 				useNewUrlParser: true,
 				useCreateIndex: true,
+				useUnifiedTopology: true,
 			}
 		),
 		ConfigModule.forRoot(),

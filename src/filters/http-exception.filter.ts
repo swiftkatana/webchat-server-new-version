@@ -13,7 +13,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
 		const ctx = host.switchToHttp()
 		const response = ctx.getResponse()
 		const request = ctx.getRequest()
-		console.log(exception)
 		const status =
 			exception instanceof HttpException
 				? exception.getStatus()
@@ -27,14 +26,15 @@ export class AllExceptionsFilter implements ExceptionFilter {
 			response.status(status).json({
 				statusCode: status,
 				path: request.url,
-				errorType: type,
-				errorMessage: message,
+				error: type,
+				message: message,
 			})
 		}
-
 		// Throw an exceptions for either
 		// MongoError, ValidationError, TypeError, CastError and Error
-		if (exception.message) {
+		const error = exception.getResponse() as any
+		if (error?.field) response.status(status).json(error)
+		else if (exception.message) {
 			responseMessage('Error', exception.message)
 		} else {
 			responseMessage(exception.name, exception.message)

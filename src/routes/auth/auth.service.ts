@@ -17,7 +17,6 @@ export class AuthService {
 	public async validateUser(userData: ISignInParameters): Promise<IUser> {
 		const { email, password } = userData
 		const user = await this.userService.findOneByEmail(email, false)
-		console.log(user)
 		if (!user)
 			throw new HttpException(
 				{
@@ -27,9 +26,7 @@ export class AuthService {
 				},
 				HttpStatus.BAD_REQUEST
 			)
-		console.log(password, user.securityInfo.password)
 		const match = await compare(password, user.securityInfo.password)
-		console.log(match)
 		if (match) return user
 		else {
 			throw new HttpException(
