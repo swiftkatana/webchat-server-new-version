@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Type } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model, Types } from 'mongoose'
 import { relationship_status } from 'enums/relationship/relationship_status'
@@ -7,9 +7,12 @@ import {
 	RelationshipDB,
 	RelationshipDocument,
 } from 'schemas/relationship/relationship'
-import { IRelationshipAPICreate } from 'enums/relationship/relationship_reqs'
+import {
+	IRelationshipAPICreate,
+	IRelationshipUpdate,
+} from 'interface/relationship/relationship'
 import { throwError } from 'error/throwError'
-import { ERROR_FIEDS, ERROR_LIST } from 'enums/error_list'
+import { ERROR_FIlEDS, ERROR_LIST } from 'enums/error_list'
 import {
 	FriendRelationshipDB,
 	friendRelationshipDocument,
@@ -34,7 +37,7 @@ export class RelationsipService {
 
 	public async getRelationships(
 		userId: Types.ObjectId
-	): Promise<RelationshipDocument[]> {
+	): Promise<friendRelationshipDocument[]> {
 		const relationships = await this.FriendRelationshipModule.find({
 			$or: [{ userId1: userId }, { userId2: userId }],
 		})
@@ -42,9 +45,9 @@ export class RelationsipService {
 		return relationships
 	}
 
-	public async checkRelationshipFriendExist(
-		usersids: string[]
-	): Promise<RelationshipDocument> {
+	public async getRelationship(
+		usersids: Types.ObjectId[]
+	): Promise<friendRelationshipDocument> {
 		return await this.FriendRelationshipModule.findOne({
 			$or: [
 				{ userId1: usersids[0], userId2: usersids[1] },
@@ -53,25 +56,70 @@ export class RelationsipService {
 		})
 	}
 
-	public async createRelationship({ users, type }: IRelationshipAPICreate) {
-		if (type === relationship_types.FRIEND) {
-			//  check if relationship already existing
-			const doWeHave = await this.checkRelationshipFriendExist(users)
-			if (doWeHave)
-				throwError({
-					error: ERROR_LIST.DUPLICATE,
-					field: ERROR_FIEDS.RELATIONSHIP_DUPLICATE,
-				})
-			else {
-				const relationship = await new this.FriendRelationshipModule({
-					userId1: users[0],
-					userId2: users[1],
-				}).save()
-				return relationship
-			}
+	public async updateRelationship({
+		geterId,
+		senderId,
+		status,
+	}: IRelationshipUpdate): Promise<friendRelationshipDocument> {
+		const relationships = await this.getRelationship([senderId, geterId])
+		if (!relationships)
+			throwError({
+				error: ERROR_LIST.NOT_EXISTS,
+				field: ERROR_FIlEDS.RELATIONSHIP_NOT_EXISTS,
+			})
+
+		// after geting the relationship we need to know what kind of update status it is
+		switch (status) {
+			// ------ acepet  relationship ------	senderId in this case is the user that acepet the request to relationship
+			case relationship_status.ACEPET:
+				//  we make sure that the user that acepet the request  is the user that need accept it
+				if (relationships.userId2 !== senderId)
+					throwError({
+						error: ERROR_LIST.BAD_REQUEST,
+						field: ERROR_FIlEDS.BAD_REQUEST,
+					})
+				else {
+					relationships.status = relationship_status.ACEPET
+				}
+
+				break
+
+			default:
+				break
+		}
+		await relationships.save()
+		return relationships
+	}
+
+	// can only create a relationship if
+	// #1 there is no existing relationship
+	// #2  there is already a relationship but its status is delete
+	public async createFriendRelationship({
+		users,
+	}: IRelationshipAPICreate): Promise<friendRelationshipDocument> {
+		//  check if there is already a relationship
+		const oldRelationships = (await this.getRelationship(
+			users
+		)) as friendRelationshipDocument
+		if (
+			oldRelationships &&
+			oldRelationships?.status === relationship_status.DELETE
+		) {
+			oldRelationships.userId1 = users[0]
+			oldRelationships.userId2 = users[1]
+			return await oldRelationships.save()
+		} else if (!oldRelationships) {
+			return await new this.FriendRelationshipModule({
+				userId1: users[0],
+				userId2: users[1],
+			}).save()
 		} else {
-			console.log('groupRelationshipDocument')
-			return await new this.GroupRelationsipModule({ users }).save()
+			throwError({
+				error: ERROR_LIST.DUPLICATE,
+				field: ERROR_FIlEDS.RELATIONSHIP_DUPLICATE,
+			})
 		}
 	}
+
+	// end
 }

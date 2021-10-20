@@ -32,7 +32,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
 		}
 		// Throw an exceptions for either
 		// MongoError, ValidationError, TypeError, CastError and Error
-		const error = exception.getResponse() as any
+		let error = exception.getResponse() as any
+
 		if (error?.field) response.status(status).json(error)
 		else if (exception.message) {
 			responseMessage('Error', exception.message)

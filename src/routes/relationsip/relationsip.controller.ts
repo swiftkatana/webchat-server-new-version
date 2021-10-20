@@ -52,11 +52,13 @@ export class RelationsipController {
 		@Req() req: IGetUserAuthInfoRequest,
 		@Body() body: RelationshipUpdateDTO
 	) {
-		const { status, data } = body
+		const { geterId, status } = body
 		const sendUser = req.user
-		let relationship: RelationshipDocument
-		console.log(status, data)
-		return relationship
+		return await this.relationshipService.updateRelationship({
+			geterId,
+			status,
+			senderId: sendUser.id,
+		})
 	}
 
 	@Post()
@@ -65,8 +67,7 @@ export class RelationsipController {
 		@Body() body: RelationshipCreateDTO
 	) {
 		const { usersIds, type } = body
-		const res = await this.relationshipService.createRelationship({
-			type: type,
+		const res = await this.relationshipService.createFriendRelationship({
 			users: usersIds,
 		})
 		return { data: res, status: 'success' }

@@ -1,5 +1,5 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose'
-import { Types } from 'mongoose'
+import { Document, Model, Types } from 'mongoose'
 import { ChatDB } from 'schemas/chats/chat'
 import { UserDB } from 'schemas/user/user.schema'
 import { relationship_types } from 'enums/relationship/relationship_types'
@@ -15,6 +15,9 @@ export class FriendRelationshipDB {
 	userId1: Types.ObjectId
 	@Prop({ type: Types.ObjectId, ref: UserDB.name, required: true })
 	userId2: Types.ObjectId
+
+	@Prop()
+	unblocker: Types.ObjectId
 
 	@Prop({ default: relationship_status.PENDING })
 	status: relationship_status

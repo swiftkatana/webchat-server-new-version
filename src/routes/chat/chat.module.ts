@@ -1,15 +1,9 @@
 import { Module } from '@nestjs/common'
 import { ChatService } from './chat.service'
-import { MongooseModule } from '@nestjs/mongoose'
-import { ChatDB } from '../../schemas/chats/chat'
-import { RelationshipSchema } from '../../schemas/relationship/relationship'
+import { ChatController } from './chat.controller'
 
 @Module({
-	imports: [
-		MongooseModule.forFeature([
-			{ name: ChatDB.name, schema: RelationshipSchema },
-		]),
-	],
+	controllers: [ChatController],
 	providers: [ChatService],
 })
 export class ChatModule {}

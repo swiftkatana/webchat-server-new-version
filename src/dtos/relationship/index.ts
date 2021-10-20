@@ -1,4 +1,4 @@
-import { IsArray } from 'class-validator'
+import { IsArray, IsString } from 'class-validator'
 import {
 	relationship_req_types,
 	relationship_types,
@@ -6,7 +6,8 @@ import {
 import {
 	relationship_status,
 	relationship_Request_types,
-} from '../../enums/relationship/relationship_status'
+} from 'enums/relationship/relationship_status'
+import { Types } from 'mongoose'
 
 export class RelationshipGetUserDTO {
 	//TODO: add validation
@@ -16,9 +17,11 @@ export class RelationshipGetUserDTO {
 export class RelationshipCreateDTO {
 	type: relationship_types
 	@IsArray()
-	usersIds: string[]
+	usersIds: Types.ObjectId[]
 }
 export class RelationshipUpdateDTO {
 	status: relationship_status
-	data: any
+
+	@IsString()
+	geterId: Types.ObjectId
 }

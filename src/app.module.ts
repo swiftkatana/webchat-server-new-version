@@ -11,8 +11,8 @@ import { JwtAuthGuard } from 'guards/jwt-auth.guard'
 import { MongooseModule } from '@nestjs/mongoose'
 import { AppGateway } from 'app.gateway'
 import { RelationsipModule } from 'routes/relationsip/relationsip.module'
-import { ChatController } from './routes/chat/chat.controller'
-import { ChatModule } from './routes/chat/chat.module'
+import { ChatController } from 'routes/chat/chat.controller'
+import { ChatModule } from 'routes/chat/chat.module'
 
 @Module({
 	imports: [
@@ -43,10 +43,9 @@ import { ChatModule } from './routes/chat/chat.module'
 		{ provide: APP_GUARD, useClass: JwtAuthGuard },
 		{ provide: APP_GUARD, useClass: RolesGuard },
 	],
-	controllers: [ChatController],
 })
 export class AppModule implements NestModule {
 	configure(consumer: MiddlewareConsumer) {
-		consumer.apply().forRoutes(AuthController, UserController)
+		consumer.apply().forRoutes(AuthController, UserController, ChatController)
 	}
 }

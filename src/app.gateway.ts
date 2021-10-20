@@ -23,10 +23,11 @@ export class AppGateway
 	handleMessage(client: Socket, payload: message): void {
 		switch (payload.type) {
 			case Io_message_type.LOGIN:
-				OnlineUsers.addUser(payload.data, client)
+				if (payload.data) OnlineUsers.addUser(payload.data, client)
+				else console.log('WTF', payload)
 				break
 			case Io_message_type.LOGOUT:
-				OnlineUsers.removeUser(client.data)
+				client.data._id && OnlineUsers.removeUser(client.data._id)
 				break
 
 			default:
@@ -46,7 +47,7 @@ export class AppGateway
 	}
 
 	handleDisconnect(client: Socket) {
-		client.data && OnlineUsers.removeUser(client.data)
+		client.data._id && OnlineUsers.removeUser(client.data._id)
 	}
 
 	handleConnection(client: Socket) {}

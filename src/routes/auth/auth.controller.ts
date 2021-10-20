@@ -79,12 +79,6 @@ export class AuthController {
 		@Req() request: IGetUserAuthInfoRequest,
 		@Res({ passthrough: true }) response: Response
 	) {
-		const user = request.user
-		user.securityInfo.token =
-			response.chunkedEncoding +
-			request.user.securityInfo.token +
-			request.user.securityInfo.password
-		await user.save()
 		response.clearCookie(COOKIES_KEYS.BestLifeAtDiscof, { httpOnly: true })
 		return { status: 'success' }
 	}

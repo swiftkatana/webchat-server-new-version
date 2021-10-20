@@ -20,6 +20,7 @@ export interface IUserStatusInfo {
 	role: userRoles
 	address: IAddress
 	description: string
+	usersIds: string[]
 	chats: Record<string, unknown>
 	friends: Record<string, unknown>
 	getFriendRequests: Record<string, unknown>

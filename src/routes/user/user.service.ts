@@ -8,10 +8,17 @@ import { IUser } from 'interface/user/user.interface'
 @Injectable()
 export class UserService {
 	constructor(
-		@InjectModel(UserDB.name) private UserModule: Model<UserDocument>
+		@InjectModel(UserDB.name)
+		private UserModule: Model<UserDocument>
 	) {}
-	filterUserObject = (show: boolean) =>
-		show ? { 'securityInfo.password': 0, 'securityInfo.token': 0 } : {}
+	private filterUserObject = (show: boolean) =>
+		show
+			? {
+					'securityInfo.password': 0,
+					'securityInfo.token': 0,
+					'securityInfo.email': 0,
+			  }
+			: {}
 
 	public async serachUserQuery(
 		query: string,
@@ -28,6 +35,7 @@ export class UserService {
 			_id: { $ne: userId },
 		})
 	}
+
 	public async createUser(userDetails: ICreateUser): Promise<IUser> {
 		const { firstName, lastName, password, email } = userDetails
 

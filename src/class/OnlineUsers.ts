@@ -4,17 +4,17 @@ class OnlineUsers {
 
 	public length = 0
 
-	public addUser = (email: string, socket: Socket) => {
-		this.usersOnline[email] = socket
-		socket.data = email
+	public addUser = (_id: string, socket: Socket) => {
+		this.usersOnline[_id] = socket
+		socket.data._id = _id
 		this.length += 1
-		console.log('login email', email)
+		console.log('login _id', _id)
 	}
 
-	public removeUser = (email: string) => {
+	public removeUser = (_id: string) => {
 		this.length -= 1
-		console.log('logout', email)
-		delete this.usersOnline[email]
+		console.log('logout', _id)
+		delete this.usersOnline[_id]
 	}
 }
 
