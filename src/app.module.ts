@@ -17,7 +17,7 @@ import { ChatModule } from 'routes/chat/chat.module'
 @Module({
 	imports: [
 		MongooseModule.forRoot(
-			'mongodb+srv://SwiftKatana:KkctM130211211@swiftkatana.3gw5v.mongodb.net/discof',
+			'',
 			{
 				useNewUrlParser: true,
 				useCreateIndex: true,
